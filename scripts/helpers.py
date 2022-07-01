@@ -88,15 +88,19 @@ def get_image_extension(image_url: str):
 
 
 def check_if_image_exists(conn, base_location: str, id: int, extension) -> bool:
+    image_location = get_image_location(conn, id)
+    return os.path.isfile(base_location, image_location, id, '.'+extension)
+
+
+def get_image_location(conn, id: int) -> str:
     cursorObj = conn.cursor()
     rows = cursorObj.execute("""SELECT CREATED_AT
                         FROM BOOKS
                         WHERE BOOK_ID = ?;""", (id,))
     created_at = rows.fetchone()
     if not created_at:
-        return False
+        raise Exception("Could not find")
     created_at_iso = datetime.fromisoformat(created_at[0])
     year = created_at_iso.year
     month = created_at_iso.month
-    path_to_file = os.path.join(base_location, year, month, id, '.'+extension)
-    return os.path.isfile(path_to_file)
+    return os.path.join(str(year), str(month))
