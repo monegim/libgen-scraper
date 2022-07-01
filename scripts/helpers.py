@@ -65,7 +65,7 @@ def process_tables(table)->Dict:
         'pages': pages,
         'image_url': image_url,
         'download_url': download_url,
-        'id': int(id),
+        'book_id': int(id),
         'extention': extention,
         'size_in_b': int(size_in_b),
     }
