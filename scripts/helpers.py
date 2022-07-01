@@ -1,6 +1,7 @@
+from datetime import datetime
+import os
 import pickle
 from typing import Dict, List
-
 import requests
 
 
@@ -76,10 +77,26 @@ def process_tables(table) -> Dict:
 
 def save_thumbnail(image_url: str, id: str, location: str = "files/thumbnails/"):
     img_data = requests.get(image_url).content
-    image_location = location + id + '.' + get_image_extension(image_url)
+    image_location = os.path.join(
+        location, id, '.' + get_image_extension(image_url))
     with open(image_location, 'wb') as handler:
         handler.write(img_data)
 
 
 def get_image_extension(image_url: str):
     return image_url.split('.')[-1]
+
+
+def check_if_image_exists(conn, base_location: str, id: int, extension) -> bool:
+    cursorObj = conn.cursor()
+    rows = cursorObj.execute("""SELECT CREATED_AT
+                        FROM BOOKS
+                        WHERE BOOK_ID = ?;""", (id,))
+    created_at = rows.fetchone()
+    if not created_at:
+        return False
+    created_at_iso = datetime.fromisoformat(created_at[0])
+    year = created_at_iso.year
+    month = created_at_iso.month
+    path_to_file = os.path.join(base_location, year, month, id, '.'+extension)
+    return os.path.isfile(path_to_file)
