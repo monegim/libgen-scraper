@@ -57,10 +57,10 @@ def sql_insert(conn, record):
     conn.commit()
     print("RECORD INSERTED")
 
-
-conn = sql_connection(database_path)
-sql_create_table(conn)
-data = {'name': 'The Well Grounded Rubyist', 'year': '28 Feb 2019', 'edition': '3rd edition | Retail PDF', 'lang': 'English', 'pages': '584',
-        'image_url': '/covers/2343000/a5c884facc5623ce320b1d947b6bdc92-d.jpg', 'download_url': '/get?&md5=A5C884FACC5623CE320B1D947B6BDC92', 'id': 2343282, 'extention': 'pdf', 'size_in_b': 4737110}
-sql_insert(conn, data)
-sql_close_connection(conn)
+def sql_check_if_record_exists(conn, id):
+    cursorObj = conn.cursor()
+    rows = cursorObj.execute("""SELECT 1 
+                        FROM BOOKS
+                        WHERE BOOK_ID = ?;""",(id,))
+    
+    return True if rows.fetchall() else False
