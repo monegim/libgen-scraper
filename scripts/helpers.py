@@ -1,6 +1,8 @@
 import pickle
 from typing import Dict, List
 
+import requests
+
 
 def save_to_var(vars_file: str, obj: List) -> None:
     with open(vars_file, "wb") as f:
@@ -16,7 +18,8 @@ def load_from_file(vars_file):
     with open(vars_file, 'rb') as f:
         return pickle.load(f)
 
-def process_tables(table)->Dict:
+
+def process_tables(table) -> Dict:
     # wirte_to_file("files/table.html", table)
     tbody = table.tbody
     trs = tbody.find_all('tr')
@@ -69,3 +72,14 @@ def process_tables(table)->Dict:
         'extention': extention,
         'size_in_b': int(size_in_b),
     }
+
+
+def save_thumbnail(image_url: str, id: str, location: str = "files/thumbnails/"):
+    img_data = requests.get(image_url).content
+    image_location = location + id + '.' + get_image_extension(image_url)
+    with open(image_location, 'wb') as handler:
+        handler.write(img_data)
+
+
+def get_image_extension(image_url: str):
+    return image_url.split('.')[-1]
