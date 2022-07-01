@@ -1,2 +1,2 @@
 # libgen-scraper
-Personal web web scaper
+Personal web scaper
