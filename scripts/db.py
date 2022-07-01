@@ -47,15 +47,20 @@ def sql_create_table(conn):
     conn.commit()
 
 
-def sql_insert(conn, record):
-    cursorObj = conn.cursor()
-    cursorObj.execute("""INSERT INTO BOOKS (NAME ,YEAR ,EDITION ,LANG ,PAGES,IMAGE_URL,DOWNLOAD_URL ,BOOK_ID ,EXTENTION, SIZE_IN_B, CREATED_AT)
-                        VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?,DATETIME('now','localtime'))""",
-                      (record['name'], record['year'], record['edition'], record['lang'], record['pages'],
-                       record['image_url'], record['download_url'],
-                       record['id'], record['extention'], record['size_in_b'],))
-    conn.commit()
-    print("RECORD INSERTED")
+def sql_insert(conn, record) -> bool:
+    # Check record exists
+    if not sql_check_if_record_exists(conn, record['book_id']):
+        cursorObj = conn.cursor()
+        cursorObj.execute("""INSERT INTO BOOKS (NAME ,YEAR ,EDITION ,LANG ,PAGES,IMAGE_URL,DOWNLOAD_URL ,BOOK_ID ,EXTENTION, SIZE_IN_B, CREATED_AT)
+                            VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?,DATETIME('now','localtime'))""",
+                        (record['name'], record['year'], record['edition'], record['lang'], record['pages'],
+                        record['image_url'], record['download_url'],
+                        record['book_id'], record['extention'], record['size_in_b'],))
+        conn.commit()
+        return True
+    else: 
+        return False
+    
 
 def sql_check_if_record_exists(conn, id):
     cursorObj = conn.cursor()
