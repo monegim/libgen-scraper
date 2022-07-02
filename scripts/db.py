@@ -53,19 +53,44 @@ def sql_insert(conn, record) -> bool:
         cursorObj = conn.cursor()
         cursorObj.execute("""INSERT INTO BOOKS (NAME ,YEAR ,EDITION ,LANG ,PAGES,IMAGE_URL,DOWNLOAD_URL ,BOOK_ID ,EXTENTION, SIZE_IN_B, CREATED_AT)
                             VALUES(?, ?, ?, ?, ?, ?, ?, ?,?,?,DATETIME('now','localtime'))""",
-                        (record['name'], record['year'], record['edition'], record['lang'], record['pages'],
-                        record['image_url'], record['download_url'],
-                        record['book_id'], record['extention'], record['size_in_b'],))
+                          (record['name'], record['year'], record['edition'], record['lang'], record['pages'],
+                           record['image_url'], record['download_url'],
+                           record['book_id'], record['extention'], record['size_in_b'],))
         conn.commit()
         return True
-    else: 
+    else:
         return False
-    
+
 
 def sql_check_if_record_exists(conn, id):
     cursorObj = conn.cursor()
     rows = cursorObj.execute("""SELECT 1 
                         FROM BOOKS
-                        WHERE BOOK_ID = ?;""",(id,))
-    
+                        WHERE BOOK_ID = ?;""", (id,))
+
     return True if rows.fetchall() else False
+
+
+def sql_read_query(conn, attr, value):
+    cursorObj = conn.cursor()
+    rows = cursorObj.execute(
+        f"SELECT * FROM BOOKS WHERE {attr} = ? ;", (value,))
+    qs = rows.fetchall()
+    res = []
+    for q in qs:
+        res.append(
+            {'id': q[0],
+             'name': q[1],
+             'year': q[2],
+             'edition': q[3],
+             'lang': q[4],
+             'pages': q[5],
+             'image_url': q[6],
+             'download_url': q[7],
+             'book_id': q[8],
+             'extention': q[9],
+             'size_in_b': q[10],
+             'crated_at': q[11],
+             }
+        )
+    return res
