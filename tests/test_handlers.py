@@ -12,6 +12,11 @@ class TestdbModule(unittest.TestCase):
         ext = helpers.get_image_extension(url)
         self.assertEqual('jpg', ext)
 
+    def test_get_image_location(self):
+        book_id = 3139992
+        location = helpers.get_image_location(self.conn, book_id)
+        self.assertEqual('2022/7', location)
+
     def test_save_thumbnail_when_dir_does_not_exist(self):
         pass
 
