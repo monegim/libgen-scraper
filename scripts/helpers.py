@@ -92,11 +92,11 @@ def check_if_image_exists(conn, base_location: str, id: int, extension) -> bool:
     return os.path.isfile(base_location, image_location, id, '.'+extension)
 
 
-def get_image_location(conn, id: int) -> str:
+def get_image_location(conn, book_id: int) -> str:
     cursorObj = conn.cursor()
     rows = cursorObj.execute("""SELECT CREATED_AT
                         FROM BOOKS
-                        WHERE BOOK_ID = ?;""", (id,))
+                        WHERE BOOK_ID = ?;""", (book_id,))
     created_at = rows.fetchone()
     if not created_at:
         raise Exception("Could not find")
