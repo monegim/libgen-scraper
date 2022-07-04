@@ -1,3 +1,4 @@
+import os
 import unittest
 from scripts import db, helpers
 
@@ -18,7 +19,12 @@ class TestdbModule(unittest.TestCase):
         self.assertEqual('2022/7', location)
 
     def test_save_thumbnail_when_dir_does_not_exist(self):
-        pass
+        book_id = "3139992"
+        image_location = helpers.get_image_location(self.conn, book_id)
+        image_url = "https://libgen.is/covers/3139000/c3603c11006024805e0e526df6de29c2-g.jpg"
+        base_location = 'files/thumbnails'
+        location = os.path.join(base_location, image_location)
+        helpers.save_thumbnail(image_url, book_id,location)
 
 
 if __name__ == '__main__':
