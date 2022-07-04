@@ -75,10 +75,12 @@ def process_tables(table) -> Dict:
     }
 
 
-def save_thumbnail(image_url: str, id: str, location: str = "files/thumbnails/"):
+def save_thumbnail(image_url: str, book_id: str, location: str = "files/thumbnails/"):
+    if not os.path.exists(location):
+        os.makedirs(location)
     img_data = requests.get(image_url).content
     image_location = os.path.join(
-        location, id, '.' + get_image_extension(image_url))
+        location, str(book_id) + '.' + get_image_extension(image_url))
     with open(image_location, 'wb') as handler:
         handler.write(img_data)
 
