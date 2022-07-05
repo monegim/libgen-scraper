@@ -24,7 +24,14 @@ class TestdbModule(unittest.TestCase):
         image_url = "https://libgen.is/covers/3139000/c3603c11006024805e0e526df6de29c2-g.jpg"
         base_location = 'files/thumbnails'
         location = os.path.join(base_location, image_location)
-        helpers.save_thumbnail(image_url, book_id,location)
+        helpers.save_thumbnail(image_url, book_id, location)
+
+    def test_check_if_image_exists(self):
+        book_id = "3139992"
+        base_location = 'files/thumbnails'
+        extension = 'jpg'
+        self.assertTrue(helpers.check_if_image_exists(
+            self.conn, base_location, book_id, extension))
 
 
 if __name__ == '__main__':
