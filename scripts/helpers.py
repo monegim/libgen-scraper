@@ -89,9 +89,9 @@ def get_image_extension(image_url: str):
     return image_url.split('.')[-1]
 
 
-def check_if_image_exists(conn, base_location: str, book_id: int, extension) -> bool:
+def check_if_image_exists(conn, base_location: str, book_id: int, extension: str) -> bool:
     image_location = get_image_location(conn, book_id)
-    return os.path.isfile(base_location, image_location, book_id, '.'+extension)
+    return os.path.isfile(os.path.join(base_location, image_location, book_id + '.' + extension))
 
 
 def get_image_location(conn, book_id: int) -> str:
