@@ -3,6 +3,7 @@ import os
 import pickle
 from typing import Dict, List
 import requests
+from db import sql_insert
 
 
 def save_to_var(vars_file: str, obj: List) -> None:
@@ -106,3 +107,10 @@ def get_image_location(conn, book_id: int) -> str:
     year = created_at_iso.year
     month = created_at_iso.month
     return os.path.join(str(year), str(month))
+
+def parse_tables_from_html(conn, bs):
+    tables = bs.find('table', {'class': 'c'})
+    tables_all = tables.find_all('table')
+    for child in tables_all[::2]:
+        res = process_tables(child)
+        sql_insert(conn, res)
