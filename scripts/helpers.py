@@ -1,9 +1,9 @@
-from datetime import datetime
+# from datetime import datetime
 import os
 import pickle
 from typing import Dict, List
 import requests
-from db import sql_insert
+import db
 
 
 def save_to_var(vars_file: str, obj: List) -> None:
@@ -95,22 +95,26 @@ def check_if_image_exists(conn, base_location: str, book_id: int, extension: str
     return os.path.isfile(os.path.join(base_location, image_location, book_id + '.' + extension))
 
 
-def get_image_location(conn, book_id: int) -> str:
-    cursorObj = conn.cursor()
-    rows = cursorObj.execute("""SELECT CREATED_AT
-                        FROM BOOKS
-                        WHERE BOOK_ID = ?;""", (book_id,))
-    created_at = rows.fetchone()
-    if not created_at:
-        raise Exception("Could not find")
-    created_at_iso = datetime.fromisoformat(created_at[0])
-    year = created_at_iso.year
-    month = created_at_iso.month
-    return os.path.join(str(year), str(month))
+# def get_image_location(conn, book_id: int) -> str:
+#     cursorObj = conn.cursor()
+#     rows = cursorObj.execute("""SELECT CREATED_AT
+#                         FROM BOOKS
+#                         WHERE BOOK_ID = ?;""", (book_id,))
+#     created_at = rows.fetchone()
+#     if not created_at:
+#         raise Exception("Could not find")
+#     created_at_iso = datetime.fromisoformat(created_at[0])
+#     year = created_at_iso.year
+#     month = created_at_iso.month
+#     return os.path.join(str(year), str(month))
 
 def parse_tables_from_html(conn, bs):
     tables = bs.find('table', {'class': 'c'})
     tables_all = tables.find_all('table')
     for child in tables_all[::2]:
         res = process_tables(child)
-        sql_insert(conn, res)
+        db.sql_insert(conn, res)
+
+
+def url_builder(keyword, number_per_page, page):
+    return f"https://libgen.is/search.php?&req={keyword}&phrase=1&view=detailed&res={number_per_page}&column=def&sort=year&sortmode=DESC&page={page}"

@@ -1,16 +1,9 @@
+from datetime import datetime
+import os
 import sqlite3
+# from helpers import save_thumbnail
+import helpers
 
-# cursor = sqliteConnection.cursor()
-# s = "SELECT sqlite_version();"
-# cursor.execute(s)
-# record = cursor.fetchall()
-# print("SQLite Database Version is: ", record)
-#
-
-# finally:
-#     if sqliteConnection:
-#         sqliteConnection.close()
-#         print("The SQLite connection is closed")
 database_path = 'files/database.db'
 
 
@@ -57,6 +50,14 @@ def sql_insert(conn, record) -> bool:
                            record['image_url'], record['download_url'],
                            record['book_id'], record['extention'], record['size_in_b'],))
         conn.commit()
+        image_url = "https://libgen.is" + record['image_url']
+        book_id = record['book_id']
+        year = datetime.today().year
+        month = datetime.today().month
+        image_location = os.path.join(str(year), str(month))
+        base_location = 'files/thumbnails'
+        location = os.path.join(base_location, image_location)
+        helpers.save_thumbnail(image_url, book_id, location)
         return True
     else:
         return False
